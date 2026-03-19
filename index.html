@@ -80,9 +80,43 @@
         .gradient-primary {
             background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
         }
-        
+
         .gradient-accent {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Hero Overlay Oscuro con Contraste */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.75) 100%);
+        }
+
+        /* Animación Slash Dorado Deluxe para Menú */
+        .nav-link {
+            position: relative;
+            display: inline-block;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link.active::after {
+            width: 80%;
         }
 
         /* Dark Mode */
@@ -1584,10 +1618,10 @@
                 </div>
 
                 <nav class="hidden lg:flex items-center gap-1">
-                    <a href="#inicio" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Inicio</a>
-                    <a href="#productos" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Productos</a>
-                    <a href="#testimonios" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Reseñas</a>
-                    <a href="#contacto" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Contacto</a>
+                    <a href="#inicio" class="nav-link px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Inicio</a>
+                    <a href="#productos" class="nav-link px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Productos</a>
+                    <a href="#testimonios" class="nav-link px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Reseñas</a>
+                    <a href="#contacto" class="nav-link px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition font-medium text-sm">Contacto</a>
                 </nav>
 
                 <div class="flex items-center gap-2">
@@ -1611,22 +1645,22 @@
     <!-- Hero Slider -->
     <section id="inicio" class="hero-slider">
         <div class="hero-slide active">
-            <img src="https://images.pexels.com/photos/1810980/pexels-photo-1810980.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="MacBook Pro" loading="eager">
+            <img src="https://images.pexels.com/photos/1810980/pexels-photo-1810980.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="MacBook Pro" loading="eager" style="filter: brightness(0.85) contrast(1.1);">
             <div class="hero-overlay"></div>
         </div>
 
         <div class="hero-slide">
-            <img src="https://images.pexels.com/photos/1763076/pexels-photo-1763076.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="iPhone 15 Pro" loading="lazy">
+            <img src="https://images.pexels.com/photos/1763076/pexels-photo-1763076.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="iPhone 15 Pro" loading="lazy" style="filter: brightness(0.85) contrast(1.1);">
             <div class="hero-overlay"></div>
         </div>
 
         <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=1920&h=1080&fit=crop" alt="iPad Pro" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=1920&h=1080&fit=crop" alt="iPad Pro" loading="lazy" style="filter: brightness(0.85) contrast(1.1);">
             <div class="hero-overlay"></div>
         </div>
 
         <div class="hero-slide">
-            <img src="https://images.pexels.com/photos/5926395/pexels-photo-5926395.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="AirPods Pro" loading="lazy">
+            <img src="https://images.pexels.com/photos/5926395/pexels-photo-5926395.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop" alt="AirPods Pro" loading="lazy" style="filter: brightness(0.85) contrast(1.1);">
             <div class="hero-overlay"></div>
         </div>
 
@@ -1674,11 +1708,11 @@
 
     <!-- Flash Sale Banner -->
     <div class="container mx-auto px-4 mb-8">
-        <div class="gradient-accent rounded-2xl p-6 text-white animate-on-scroll">
+        <div class="rounded-2xl p-6 text-white animate-on-scroll" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #0d0d0d 100%); border: 2px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="text-center md:text-left">
                     <h3 class="text-2xl font-bold mb-2">🔥 Oferta Flash</h3>
-                    <p class="text-white/90">¡Hasta 30% de descuento en productos seleccionados!</p>
+                    <p class="text-gray-300">¡Hasta 30% de descuento en productos seleccionados!</p>
                 </div>
                 <div class="countdown-timer" id="countdownTimer">
                     <div class="countdown-item">
@@ -1934,6 +1968,13 @@
                             <i class="ri-qr-code-line text-2xl"></i>
                             <span>Yape / Plin</span>
                         </div>
+                        <div class="flex items-center gap-2 text-sm mt-3 pt-3 border-t border-white/20">
+                            <i class="ri-hand-coin-line text-2xl text-green-400"></i>
+                            <div>
+                                <span class="font-semibold text-green-400">Contraentrega</span>
+                                <p class="text-xs text-gray-400">Paga en centros comerciales</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -2081,6 +2122,12 @@
                                 <i class="ri-qr-code-line text-2xl text-purple-600"></i>
                             </div>
                             <p class="text-xs font-medium">Yape/Plin</p>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment('contraentrega')" role="radio" aria-label="Contraentrega">
+                            <div class="payment-icon bg-green-100">
+                                <i class="ri-hand-coin-line text-2xl text-green-600"></i>
+                            </div>
+                            <p class="text-xs font-medium">Contraentrega</p>
                         </div>
                     </div>
                 </div>
@@ -2234,10 +2281,20 @@
         ].sort((a, b) => a.name.localeCompare(b.name));
 
         const testimonials = [
-            { name: 'Carlos M.', avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100', rating: 5, text: 'Excelente servicio! Llegó en 24 horas a Miraflores. El producto llegó perfectamente embalado.', date: 'Hace 3 días' },
-            { name: 'María F.', avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=100', rating: 5, text: 'Producto 100% original con garantía de Apple. Los mejores precios que encontré en Lima.', date: 'Hace 1 semana' },
-            { name: 'Jorge R.', avatar: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?w=100', rating: 5, text: 'La atención por WhatsApp fue rápida y eficiente. Mi MacBook llegó sin ningún detalle.', date: 'Hace 2 semanas' },
-            { name: 'Ana P.', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=100', rating: 5, text: 'Compré los AirPods Pro y llegaron al día siguiente. Increíble servicio!', date: 'Hace 3 semanas' }
+            { name: 'Carlos M.', avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100', rating: 5, text: 'Excelente servicio! Llegó en 24 horas a Miraflores. El producto llegó perfectamente embalado.', date: 'Hace 3 días', location: 'Lima, Perú' },
+            { name: 'María F.', avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=100', rating: 5, text: 'Producto 100% original con garantía de Apple. Los mejores precios que encontré en Lima.', date: 'Hace 1 semana', location: 'Lima, Perú' },
+            { name: 'Jorge R.', avatar: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?w=100', rating: 5, text: 'La atención por WhatsApp fue rápida y eficiente. Mi MacBook llegó sin ningún detalle.', date: 'Hace 2 semanas', location: 'Lima, Perú' },
+            { name: 'Ana P.', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=100', rating: 5, text: 'Compré los AirPods Pro y llegaron al día siguiente. Increíble servicio!', date: 'Hace 3 semanas', location: 'Lima, Perú' },
+            { name: 'Luis T.', avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?w=100', rating: 5, text: 'Pedí mi iPhone 15 Pro y llegó en perfectas condiciones a Arequipa. ¡Recomendadísimos!', date: 'Hace 1 mes', location: 'Arequipa, Perú' },
+            { name: 'Patricia S.', avatar: 'https://images.pexels.com/photos/123929/pexels-photo-123929.jpeg?w=100', rating: 5, text: 'La mejor tienda online de tecnología en Perú. Mi Apple Watch llegó en 2 días a Trujillo.', date: 'Hace 1 mes', location: 'Trujillo, Perú' },
+            { name: 'Roberto G.', avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100', rating: 5, text: 'Excelente atención al cliente. Tuve una consulta y me respondieron en minutos por WhatsApp.', date: 'Hace 2 meses', location: 'Lima, Perú' },
+            { name: 'Carmen L.', avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=100', rating: 5, text: 'Compré un iPad para mi hijo y llegó perfectamente a Chiclayo. ¡Gracias TechStore!', date: 'Hace 2 meses', location: 'Chiclayo, Perú' },
+            { name: 'Miguel Á.', avatar: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?w=100', rating: 5, text: 'Los precios más bajos del mercado y producto original. Mi MacBook Air llegó impecable.', date: 'Hace 3 meses', location: 'Lima, Perú' },
+            { name: 'Sandra V.', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=100', rating: 5, text: 'Envío rápido y seguro. Mis AirPods Max llegaron en 48 horas a Piura. ¡Súper contenta!', date: 'Hace 3 meses', location: 'Piura, Perú' },
+            { name: 'Fernando D.', avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?w=100', rating: 5, text: 'La garantía es real y el soporte es excelente. Tuve un problema y lo solucionaron rápido.', date: 'Hace 4 meses', location: 'Lima, Perú' },
+            { name: 'Rosa M.', avatar: 'https://images.pexels.com/photos/123929/pexels-photo-123929.jpeg?w=100', rating: 5, text: 'Compré contraentrega y todo salió perfecto. El repartidor fue muy amable en Huancayo.', date: 'Hace 4 meses', location: 'Huancayo, Perú' },
+            { name: 'Pedro J.', avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100', rating: 5, text: 'Productos 100% originales. Mi iPhone 15 llegó sellado y con todos los accesorios.', date: 'Hace 5 meses', location: 'Lima, Perú' },
+            { name: 'Gabriela R.', avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=100', rating: 5, text: 'La página es fácil de usar y el envío fue más rápido de lo esperado. ¡Volveré a comprar!', date: 'Hace 5 meses', location: 'Cusco, Perú' }
         ];
 
         // Estado de la aplicación
@@ -2525,6 +2582,7 @@
                             <div class="flex text-yellow-400 text-xs" role="img" aria-label="${t.rating} estrellas">
                                 ${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}
                             </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="ri-map-pin-line"></i> ${t.location}</p>
                         </div>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 text-sm">"${t.text}"</p>
