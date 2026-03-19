@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TiendaShop - Tu Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .yape-color {
+            background: linear-gradient(135deg, #742284 0%, #9c27b0 100%);
+        }
+        
+        .plin-color {
+            background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .cart-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .modal:not(.hidden) {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .payment-option {
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            transform: scale(1.02);
+        }
+        
+        .payment-option.selected {
+            ring: 3px solid #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .testimonial-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+        
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-dot.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+        
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .carousel-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .carousel-btn.prev {
+            left: 10px;
+        }
+        
+        .carousel-btn.next {
+            right: 10px;
+        }
+        
+        .category-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .star-rating {
+            color: #fbbf24;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="ri-shopping-bag-3-fill text-3xl"></i>
+                    <h1 class="text-2xl font-bold">TiendaShop</h1>
+                </div>
+                
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#productos" class="hover:opacity-80 transition">Productos</a>
+                    <a href="#testimonios" class="hover:opacity-80 transition">Testimonios</a>
+                    <a href="#contacto" class="hover:opacity-80 transition">Contacto</a>
+                </nav>
+                
+                <div class="flex items-center space-x-6">
+                    <button onclick="toggleCart()" class="relative hover:opacity-80 transition">
+                        <i class="ri-shopping-cart-2-line text-2xl"></i>
+                        <span id="cartCount" class="cart-badge absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Bienvenido a TiendaShop</h2>
+            <p class="text-xl mb-8 opacity-90">Los mejores productos al mejor precio</p>
+            <div class="flex justify-center flex-wrap gap-4">
+                <div class="flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-full">
+                    <i class="ri-qr-code-line"></i>
+                    <span>Aceptamos Yape y Plin</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-full">
+                    <i class="ri-truck-line"></i>
+                    <span>Envío Gratis</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-full">
+                    <i class="ri-shield-check-line"></i>
+                    <span>Garantía Total</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="py-8 bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-3" id="categoryFilter">
+                <button onclick="filterProducts('all')" class="category-btn active px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Todos</button>
+                <button onclick="filterProducts('Electrónica')" class="category-btn px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Electrónica</button>
+                <button onclick="filterProducts('Deportes')" class="category-btn px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Deportes</button>
+                <button onclick="filterProducts('Accesorios')" class="category-btn px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Accesorios</button>
+                <button onclick="filterProducts('Hogar')" class="category-btn px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Hogar</button>
+                <button onclick="filterProducts('Moda')" class="category-btn px-6 py-2 rounded-full border border-purple-500 text-purple-500 font-medium">Moda</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="productos" class="py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-gray-800 mb-8 text-center">Nuestros Productos</h3>
+            
+            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="py-16 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-gray-800 mb-4 text-center">Lo Que Dicen Nuestros Clientes</h3>
+            <p class="text-gray-600 text-center mb-12">Miles de clientes satisfechos confían en nosotros</p>
+            
+            <div class="carousel-container max-w-4xl mx-auto">
+                <button onclick="prevSlide()" class="carousel-btn prev">
+                    <i class="ri-arrow-left-s-line text-2xl"></i>
+                </button>
+                
+                <div class="carousel-track" id="testimonialTrack"></div>
+                
+                <button onclick="nextSlide()" class="carousel-btn next">
+                    <i class="ri-arrow-right-s-line text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="carousel-dots" id="carouselDots"></div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">10K+</div>
+                    <div class="text-gray-600">Clientes Felices</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">500+</div>
+                    <div class="text-gray-600">Productos</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">4.9</div>
+                    <div class="text-gray-600">Calificación</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">24/7</div>
+                    <div class="text-gray-600">Soporte</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-gray-800 mb-12 text-center">¿Por Qué Elegirnos?</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6">
+                    <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 float-animation">
+                        <i class="ri-truck-line text-3xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-lg mb-2">Envío Rápido</h4>
+                    <p class="text-gray-600">Entrega en 24-48 horas en todo el país</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 float-animation" style="animation-delay: 0.5s;">
+                        <i class="ri-shield-check-line text-3xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-lg mb-2">Garantía Total</h4>
+                    <p class="text-gray-600">30 días de garantía en todos los productos</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 float-animation" style="animation-delay: 1s;">
+                        <i class="ri-qr-code-line text-3xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-lg mb-2">Pago Seguro</h4>
+                    <p class="text-gray-600">Yape, Plin y todas las tarjetas</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 float-animation" style="animation-delay: 1.5s;">
+                        <i class="ri-customer-service-2-line text-3xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-lg mb-2">Soporte 24/7</h4>
+                    <p class="text-gray-600">Atención al cliente todos los días</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <div class="gradient-bg text-white p-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Carrito de Compras</h3>
+                <button onclick="toggleCart()" class="hover:opacity-80">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+            </div>
+            
+            <div id="cartItems" class="flex-1 overflow-y-auto p-4"></div>
+            
+            <div class="border-t p-4 bg-gray-50">
+                <div class="flex justify-between mb-4">
+                    <span class="text-lg font-semibold">Total:</span>
+                    <span id="cartTotal" class="text-lg font-bold text-purple-600">S/ 0.00</span>
+                </div>
+                <button onclick="openCheckout()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                    Proceder al Pago
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">Finalizar Compra</h3>
+                    <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700">
+                        <i class="ri-close-line text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-semibold text-gray-700 mb-3">Información del Cliente</h4>
+                    <div class="space-y-3">
+                        <input type="text" id="customerName" placeholder="Nombre completo" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <input type="tel" id="customerPhone" placeholder="Número de celular" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <input type="email" id="customerEmail" placeholder="Correo electrónico" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <textarea id="customerAddress" placeholder="Dirección de entrega" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-semibold text-gray-700 mb-3">Método de Pago</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div id="yapeOption" onclick="selectPayment('yape')" class="payment-option yape-color text-white p-4 rounded-xl cursor-pointer text-center">
+                            <i class="ri-qr-code-line text-3xl mb-2"></i>
+                            <p class="font-semibold">Yape</p>
+                        </div>
+                        <div id="plinOption" onclick="selectPayment('plin')" class="payment-option plin-color text-white p-4 rounded-xl cursor-pointer text-center">
+                            <i class="ri-qr-code-line text-3xl mb-2"></i>
+                            <p class="font-semibold">Plin</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="qrSection" class="hidden mb-6">
+                    <h4 class="font-semibold text-gray-700 mb-3">Escanea el QR</h4>
+                    <div class="bg-gray-100 rounded-xl p-6 text-center">
+                        <div id="qrCode" class="w-48 h-48 mx-auto bg-white rounded-lg flex items-center justify-center mb-4">
+                            <i class="ri-qr-code-line text-6xl text-gray-400"></i>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">Número: <span id="paymentNumber" class="font-semibold">999 999 999</span></p>
+                        <p class="text-sm text-gray-600">Monto: <span id="paymentAmount" class="font-semibold text-purple-600">S/ 0.00</span></p>
+                    </div>
+                </div>
+                
+                <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+                    <h4 class="font-semibold text-gray-700 mb-3">Resumen del Pedido</h4>
+                    <div id="orderSummary" class="space-y-2 text-sm"></div>
+                    <div class="border-t mt-3 pt-3 flex justify-between font-bold">
+                        <span>Total a Pagar:</span>
+                        <span id="orderTotal" class="text-purple-600">S/ 0.00</span>
+                    </div>
+                </div>
+                
+                <button id="confirmPayment" onclick="confirmPayment()" class="w-full gradient-bg text-white py-4 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Confirmar Pago
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="ri-check-line text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">¡Pago Exitoso!</h3>
+            <p class="text-gray-600 mb-6">Gracias por tu compra. Te enviaremos los detalles a tu correo.</p>
+            <button onclick="closeSuccessModal()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                Continuar Comprando
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <span id="toastMessage">Mensaje</span>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contacto" class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="ri-shopping-bag-3-fill text-3xl"></i>
+                        <h4 class="text-xl font-bold">TiendaShop</h4>
+                    </div>
+                    <p class="text-gray-400">Tu tienda de confianza con los mejores productos del mercado.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="ri-facebook-fill text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="ri-instagram-fill text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="ri-twitter-fill text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="ri-whatsapp-fill text-xl"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#productos" class="hover:text-white transition">Productos</a></li>
+                        <li><a href="#testimonios" class="hover:text-white transition">Testimonios</a></li>
+                        <li><a href="#" class="hover:text-white transition">Política de Privacidad</a></li>
+                        <li><a href="#" class="hover:text-white transition">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Métodos de Pago</h4>
+                    <div class="space-y-3">
+                        <div class="yape-color px-4 py-3 rounded-lg flex items-center space-x-3">
+                            <i class="ri-qr-code-line text-xl"></i>
+                            <span class="font-semibold">Yape</span>
+                        </div>
+                        <div class="plin-color px-4 py-3 rounded-lg flex items-center space-x-3">
+                            <i class="ri-qr-code-line text-xl"></i>
+                            <span class="font-semibold">Plin</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i class="ri-phone-line"></i>
+                            <span>+51 999 999 999</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="ri-mail-line"></i>
+                            <span>contacto@tiendashop.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="ri-map-pin-line"></i>
+                            <span>Lima, Perú</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="ri-time-line"></i>
+                            <span>Lun - Dom: 9AM - 9PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-center md:text-left">&copy; 2024 TiendaShop. Todos los derechos reservados.</p>
+                    <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                        <img src="https://img.shields.io/badge/SSL-Secure-green?style=flat-square" alt="SSL Secure" class="h-6">
+                        <img src="https://img.shields.io/badge/Pago-Seguro-blue?style=flat-square" alt="Pago Seguro" class="h-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Auriculares Bluetooth Pro', price: 89.90, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', category: 'Electrónica', rating: 4.8, reviews: 234 },
+            { id: 2, name: 'Reloj Inteligente Sport', price: 199.90, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', category: 'Electrónica', rating: 4.7, reviews: 189 },
+            { id: 3, name: 'Cámara Digital 4K', price: 549.90, image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400', category: 'Electrónica', rating: 4.9, reviews: 156 },
+            { id: 4, name: 'Zapatillas Running Pro', price: 159.90, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', category: 'Deportes', rating: 4.6, reviews: 312 },
+            { id: 5, name: 'Mochila Urbana Premium', price: 79.90, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400', category: 'Accesorios', rating: 4.5, reviews: 178 },
+            { id: 6, name: 'Gafas de Sol Polarizadas', price: 49.90, image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400', category: 'Accesorios', rating: 4.4, reviews: 201 },
+            { id: 7, name: 'Laptop Gaming Ultra', price: 2499.90, image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400', category: 'Electrónica', rating: 4.9, reviews: 89 },
+            { id: 8, name: 'Teclado Mecánico RGB', price: 129.90, image: 'https://images.unsplash.com/photo-1587829741301-dc798b91a603?w=400', category: 'Electrónica', rating: 4.7, reviews: 267 },
+            { id: 9, name: 'Smartphone 5G', price: 899.90, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400', category: 'Electrónica', rating: 4.8, reviews: 445 },
+            { id: 10, name: 'Tablet Pro 11"', price: 649.90, image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400', category: 'Electrónica', rating: 4.6, reviews: 198 },
+            { id: 11, name: 'Parlante Bluetooth', price: 119.90, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400', category: 'Electrónica', rating: 4.5, reviews: 334 },
+            { id: 12, name: 'Bicicleta Mountain Bike', price: 799.90, image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=400', category: 'Deportes', rating: 4.7, reviews: 123 },
+            { id: 13, name: 'Set de Pesas Ajustables', price: 249.90, image: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=400', category: 'Deportes', rating: 4.6, reviews: 167 },
+            { id: 14, name: 'Yoga Mat Premium', price: 39.90, image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400', category: 'Deportes', rating: 4.4, reviews: 289 },
+            { id: 15, name: 'Bolso de Cuero', price: 189.90, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400', category: 'Accesorios', rating: 4.7, reviews: 156 },
+            { id: 16, name: 'Cartera Elegante', price: 69.90, image: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=400', category: 'Accesorios', rating: 4.5, reviews: 234 },
+            { id: 17, name: 'Lámpara de Escritorio LED', price: 59.90, image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400', category: 'Hogar', rating: 4.6, reviews: 178 },
+            { id: 18, name: 'Planta Decorativa', price: 29.90, image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400', category: 'Hogar', rating: 4.3, reviews: 267 },
+            { id: 19, name: 'Juego de Sábanas', price: 89.90, image: 'https://images.unsplash.com/photo-1522771753035-1a5b6569f394?w=400', category: 'Hogar', rating: 4.5, reviews: 145 },
+            { id: 20, name: 'Vestido Casual', price: 79.90, image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400', category: 'Moda', rating: 4.4, reviews: 312 },
+            { id: 21, name: 'Camisa Formal', price: 59.90, image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400', category: 'Moda', rating: 4.5, reviews: 189 },
+            { id: 22, name: 'Jeans Slim Fit', price: 99.90, image: 'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=400', category: 'Moda', rating: 4.6, reviews: 278 },
+            { id: 23, name: 'Chaqueta de Cuero', price: 249.90, image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400', category: 'Moda', rating: 4.7, reviews: 167 },
+            { id: 24, name: 'Cafetera Espresso', price: 299.90, image: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400', category: 'Hogar', rating: 4.8, reviews: 234 }
+        ];
+
+        const testimonials = [
+            { id: 1, name: 'María González', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100', rating: 5, text: 'Excelente servicio! Los productos llegaron en perfectas condiciones y muy rápido. Definitivamente volveré a comprar.', date: 'Hace 2 días', verified: true },
+            { id: 2, name: 'Carlos Rodríguez', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100', rating: 5, text: 'La mejor tienda online que he probado. El proceso de pago con Yape fue súper fácil y rápido. ¡Recomendado!', date: 'Hace 5 días', verified: true },
+            { id: 3, name: 'Ana Martínez', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100', rating: 5, text: 'Compré un reloj inteligente y superó mis expectativas. La calidad es increíble y el precio muy competitivo.', date: 'Hace 1 semana', verified: true },
+            { id: 4, name: 'Luis Fernández', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100', rating: 4, text: 'Muy buena experiencia de compra. El único detalle fue que el envío tardó un día más de lo esperado, pero todo perfecto.', date: 'Hace 2 semanas', verified: true },
+            { id: 5, name: 'Patricia Silva', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100', rating: 5, text: 'El atención al cliente es excepcional. Tuve una duda y me respondieron en minutos. Los productos son de primera calidad.', date: 'Hace 3 semanas', verified: true },
+            { id: 6, name: 'Roberto Díaz', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100', rating: 5, text: 'Compré varios productos para mi hogar y todos llegaron perfectos. La página es muy fácil de usar. ¡Volveré!', date: 'Hace 1 mes', verified: true }
+        ];
+
+        let cart = [];
+        let selectedPayment = null;
+        let currentSlide = 0;
+        let autoSlideInterval;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderTestimonials();
+            renderCarouselDots();
+            loadCartFromStorage();
+            startAutoSlide();
+        });
+
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('productsGrid');
+            const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
+            
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                        <span class="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">${product.category}</span>
+                        <button onclick="addToWishlist(${product.id})" class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition">
+                            <i class="ri-heart-line text-gray-600 hover:text-red-500"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">${product.name}</h4>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating flex">${renderStars(product.rating)}</div>
+                            <span class="text-xs text-gray-500 ml-2">(${product.reviews})</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-purple-600">S/ ${product.price.toFixed(2)}</span>
+                            <button onclick="addToCart(${product.id})" class="gradient-bg text-white px-4 py-2 rounded-lg hover:opacity-90 transition flex items-center space-x-1">
+                                <i class="ri-add-line"></i><span>Agregar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) stars += '<i class="ri-star-fill"></i>';
+                else if (i - 0.5 <= rating) stars += '<i class="ri-star-half-fill"></i>';
+                else stars += '<i class="ri-star-line"></i>';
+            }
+            return stars;
+        }
+
+        function filterProducts(category) {
+            renderProducts(category);
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === category || (category === 'all' && btn.textContent.trim() === 'Todos')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function renderTestimonials() {
+            const track = document.getElementById('testimonialTrack');
+            track.innerHTML = testimonials.map(testimonial => `
+                <div class="carousel-slide">
+                    <div class="testimonial-card">
+                        <div class="flex items-center mb-4">
+                            <img src="${testimonial.avatar}" alt="${testimonial.name}" class="w-16 h-16 rounded-full object-cover mr-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">${testimonial.name}</h4>
+                                <div class="flex items-center">
+                                    <div class="star-rating text-sm">${renderStars(testimonial.rating)}</div>
+                                    ${testimonial.verified ? '<i class="ri-verified-badge-fill text-green-500 ml-2"></i>' : ''}
+                                </div>
+                                <p class="text-xs text-gray-500">${testimonial.date}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"${testimonial.text}"</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCarouselDots() {
+            const dotsContainer = document.getElementById('carouselDots');
+            dotsContainer.innerHTML = testimonials.map((_, index) => `
+                <div class="carousel-dot ${index === currentSlide ? 'active' : ''}" onclick="goToSlide(${index})"></div>
+            `).join('');
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('testimonialTrack');
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % testimonials.length;
+            updateCarousel();
+            resetAutoSlide();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + testimonials.length) % testimonials.length;
+            updateCarousel();
+            resetAutoSlide();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+            resetAutoSlide();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlideInterval);
+            startAutoSlide();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            saveCartToStorage();
+            updateCartUI();
+            showToast(`¡${product.name} agregado al carrito!`);
+        }
+
+        function addToWishlist(productId) {
+            showToast('¡Producto agregado a favoritos!');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCartToStorage();
+            updateCartUI();
+            renderCartItems();
+            showToast('Producto eliminado del carrito');
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    saveCartToStorage();
+                    updateCartUI();
+                    renderCartItems();
+                }
+            }
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('cartTotal').textContent = `S/ ${total.toFixed(2)}`;
+        }
+
+        function renderCartItems() {
+            const cartItems = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="ri-shopping-cart-line text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Tu carrito está vacío</p>
+                        <button onclick="toggleCart()" class="mt-4 gradient-bg text-white px-6 py-2 rounded-lg hover:opacity-90 transition">Ver Productos</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            cartItems.innerHTML = cart.map(item => `
+                <div class="flex items-center space-x-4 mb-4 p-3 bg-gray-50 rounded-lg">
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-800 text-sm">${item.name}</h4>
+                        <p class="text-purple-600 font-bold">S/ ${item.price.toFixed(2)}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+                            <i class="ri-subtract-line"></i>
+                        </button>
+                        <span class="w-8 text-center font-semibold">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+                            <i class="ri-add-line"></i>
+                        </button>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 transition">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            sidebar.classList.toggle('translate-x-full');
+            renderCartItems();
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) {
+                showToast('Tu carrito está vacío');
+                return;
+            }
+            document.getElementById('checkoutModal').classList.remove('hidden');
+            renderOrderSummary();
+            selectedPayment = null;
+            updatePaymentSelection();
+            document.getElementById('qrSection').classList.add('hidden');
+            document.getElementById('confirmPayment').disabled = true;
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            updatePaymentSelection();
+            document.getElementById('qrSection').classList.remove('hidden');
+            document.getElementById('confirmPayment').disabled = false;
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('paymentAmount').textContent = `S/ ${total.toFixed(2)}`;
+            
+            const qrCode = document.getElementById('qrCode');
+            qrCode.innerHTML = `<i class="ri-qr-code-line text-6xl ${method === 'yape' ? 'text-purple-600' : 'text-teal-500'}"></i>`;
+            document.getElementById('paymentNumber').textContent = method === 'yape' ? '999 999 999' : '988 888 888';
+        }
+
+        function updatePaymentSelection() {
+            document.getElementById('yapeOption').classList.toggle('ring-4', selectedPayment === 'yape');
+            document.getElementById('yapeOption').classList.toggle('ring-purple-300', selectedPayment === 'yape');
+            document.getElementById('plinOption').classList.toggle('ring-4', selectedPayment === 'plin');
+            document.getElementById('plinOption').classList.toggle('ring-teal-300', selectedPayment === 'plin');
+        }
+
+        function renderOrderSummary() {
+            const summary = document.getElementById('orderSummary');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            summary.innerHTML = cart.map(item => `
+                <div class="flex justify-between">
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>S/ ${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('orderTotal').textContent = `S/ ${total.toFixed(2)}`;
+        }
+
+        function confirmPayment() {
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const email = document.getElementById('customerEmail').value;
+            
+            if (!name || !phone || !email) {
+                showToast('Por favor completa todos los campos');
+                return;
+            }
+            
+            if (!selectedPayment) {
+                showToast('Selecciona un método de pago');
+                return;
+            }
+            
+            const confirmBtn = document.getElementById('confirmPayment');
+            confirmBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+            confirmBtn.disabled = true;
+            
+            setTimeout(() => {
+                closeCheckout();
+                document.getElementById('successModal').classList.remove('hidden');
+                cart = [];
+                saveCartToStorage();
+                updateCartUI();
+                confirmBtn.innerHTML = 'Confirmar Pago';
+                confirmBtn.disabled = false;
+                
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerAddress').value = '';
+            }, 2000);
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem('tiendaShopCart', JSON.stringify(cart));
+        }
+
+        function loadCartFromStorage() {
+            const savedCart = localStorage.getItem('tiendaShopCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
+        }
+
+        document.getElementById('checkoutModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('checkoutModal')) {
+                closeCheckout();
+            }
+        });
+
+        document.getElementById('successModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('successModal')) {
+                closeSuccessModal();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
