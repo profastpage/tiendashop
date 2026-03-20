@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mario Bros 3D - Prototipo Web</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; }
+        #instrucciones {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            text-shadow: 2px 2px 0 #000;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="instrucciones">
+        Mover: Flechas / WASD<br>
+        Saltar: ESPACIO<br>
+        ¡Recoge el cubo amarillo!
+    </div>
+
+    <!-- Importamos Three.js desde un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- 1. CONFIGURACIÓN BÁSICA ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Cielo azul
+        scene.fog = new THREE.Fog(0x87CEEB, 10, 50);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // --- 2. ILUMINACIÓN ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        // --- 3. CREACIÓN DE OBJETOS (MARIO Y MUNDO) ---
+        
+        // El Jugador (Mario) - Cubo Rojo
+        const geometryPlayer = new THREE.BoxGeometry(1, 1, 1);
+        const materialPlayer = new THREE.MeshLambertMaterial({ color: 0xff0000 }); // Rojo Mario
+        const player = new THREE.Mesh(geometryPlayer, materialPlayer);
+        player.castShadow = true;
+        player.position.y = 5; // Empezar en el aire
+        scene.add(player);
+
+        // Suelo
+        const geometryGround = new THREE.BoxGeometry(40, 1, 40);
+        const materialGround = new THREE.MeshLambertMaterial({ color: 0x228B22 }); // Verde Césped
+        const ground = new THREE.Mesh(geometryGround, materialGround);
+        ground.position.y = -0.5;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Plataformas
+        const platforms = [];
+        
+        function crearPlataforma(x, y, z, ancho, largo) {
+            const geo = new THREE.BoxGeometry(ancho, 1, largo);
+            const mat = new THREE.MeshLambertMaterial({ color: 0x8B4513 }); // Marrón Bloque
+            const plat = new THREE.Mesh(geo, mat);
+            plat.position.set(x, y, z);
+            plat.castShadow = true;
+            plat.receiveShadow = true;
+            scene.add(plat);
+            platforms.push(plat);
+            return plat;
+        }
+
+        crearPlataforma(0, 1.5, -8, 5, 2);
+        crearPlataforma(5, 3, -8, 3, 2);
+        crearPlataforma(-5, 4.5, -8, 3, 2);
+        crearPlataforma(0, 6, -8, 2, 2);
+
+        // Meta (Cubo Amarillo)
+        const geometryGoal = new THREE.BoxGeometry(1, 1, 1);
+        const materialGoal = new THREE.MeshBasicMaterial({ color: 0xFFFF00, wireframe: true });
+        const goal = new THREE.Mesh(geometryGoal, materialGoal);
+        goal.position.set(0, 7, -8);
+        scene.add(goal);
+
+        // --- 4. LÓGICA DEL JUEGO (FÍSICAS Y CONTROLES) ---
+        
+        let playerVelocityY = 0;
+        let isGrounded = false;
+        const gravity = -0.02;
+        const jumpStrength = 0.4;
+        const speed = 0.15;
+
+        const keys = { w: false, a: false, s: false, d: false, space: false };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') keys.space = true;
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') keys.w = true;
+            if (e.code === 'KeyS' || e.code === 'ArrowDown') keys.s = true;
+            if (e.code === 'KeyA' || e.code === 'ArrowLeft') keys.a = true;
+            if (e.code === 'KeyD' || e.code === 'ArrowRight') keys.d = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') keys.space = false;
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') keys.w = false;
+            if (e.code === 'KeyS' || e.code === 'ArrowDown') keys.s = false;
+            if (e.code === 'KeyA' || e.code === 'ArrowLeft') keys.a = false;
+            if (e.code === 'KeyD' || e.code === 'ArrowRight') keys.d = false;
+        });
+
+        // Función simple de colisión AABB (Caja contra Caja)
+        function checkCollision(obj1, obj2) {
+            const box1 = new THREE.Box3().setFromObject(obj1);
+            const box2 = new THREE.Box3().setFromObject(obj2);
+            return box1.intersectsBox(box2);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 1. Movimiento Horizontal
+            if (keys.w) player.position.z -= speed;
+            if (keys.s) player.position.z += speed;
+            if (keys.a) player.position.x -= speed;
+            if (keys.d) player.position.x += speed;
+
+            // 2. Gravedad y Salto
+            playerVelocityY += gravity;
+            player.position.y += playerVelocityY;
+
+            // Colisión con el suelo principal
+            if (player.position.y <= 0.5) {
+                player.position.y = 0.5;
+                playerVelocityY = 0;
+                isGrounded = true;
+            } else {
+                isGrounded = false;
+            }
+
+            // Colisión con plataformas
+            // Nota: Esta es una colisión simplificada. Para un juego real se necesita física compleja.
+            // Aquí simplemente verificamos si estamos tocando una plataforma desde arriba.
+            platforms.forEach(plat => {
+                // Obtenemos los límites de la plataforma
+                const platBox = new THREE.Box3().setFromObject(plat);
+                const playerBox = new THREE.Box3().setFromObject(player);
+
+                // Verificar si estamos dentro del área horizontal de la plataforma
+                if (player.position.x > platBox.min.x - 0.5 && player.position.x < platBox.max.x + 0.5 &&
+                    player.position.z > platBox.min.z - 0.5 && player.position.z < platBox.max.z + 0.5) {
+                    
+                    // Verificar si estamos cayendo sobre ella
+                    if (player.position.y >= platBox.max.y && player.position.y <= platBox.max.y + 1 && playerVelocityY <= 0) {
+                        player.position.y = platBox.max.y + 0.5;
+                        playerVelocityY = 0;
+                        isGrounded = true;
+                    }
+                }
+            });
+
+            // Salto
+            if (keys.space && isGrounded) {
+                playerVelocityY = jumpStrength;
+                isGrounded = false;
+            }
+
+            // 3. Cámara sigue al jugador
+            camera.position.x = player.position.x;
+            camera.position.y = player.position.y + 5;
+            camera.position.z = player.position.z + 8;
+            camera.lookAt(player.position);
+
+            // 4. Animación de la meta
+            goal.rotation.y += 0.02;
+            goal.rotation.x += 0.01;
+
+            // 5. Chequear Victoria
+            if (checkCollision(player, goal)) {
+                alert("¡GANASTE! Mario llegó a la meta.");
+                player.position.set(0, 5, 0);
+                playerVelocityY = 0;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Ajustar ventana si cambia tamaño
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
