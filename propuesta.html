@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Comercial - Desarrollo Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none; }
+      body { -webkit-print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 2cm; }
+  </style>
+</head>
+<body class="bg-gray-100 p-8">
+  
+  <!-- Botón para imprimir (no sale en PDF) -->
+  <div class="no-print mb-6 text-center">
+    <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+      📥 Descargar como PDF
+    </button>
+    <p class="text-gray-600 mt-2 text-sm">Haz clic y selecciona "Guardar como PDF"</p>
+  </div>
+
+  <!-- Propuesta -->
+  <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-900 to-blue-600 text-white p-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">PROPUESTA COMERCIAL</h1>
+          <p class="text-blue-200">Desarrollo de Sitio Web Profesional</p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm text-blue-200">Fecha</p>
+          <p class="font-semibold" id="fecha"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="p-8 space-y-8">
+      
+      <!-- Datos del Cliente -->
+      <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-blue-600">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">📋 INFORMACIÓN DEL PROYECTO</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-600">Cliente:</p>
+            <p class="font-semibold text-lg" contenteditable="true">[Nombre del Cliente]</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Proyecto:</p>
+            <p class="font-semibold text-lg" contenteditable="true">Sitio Web Corporativo</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Tipo de Web:</p>
+            <p class="font-semibold" contenteditable="true">Landing Page / Web Informativa</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Tiempo de entrega:</p>
+            <p class="font-semibold">2-3 días hábiles</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paquetes -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">💼 PAQUETES DISPONIBLES</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Básico -->
+          <div class="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-500 transition">
+            <div class="text-center mb-4">
+              <h3 class="text-xl font-bold text-gray-900">BÁSICO</h3>
+              <p class="text-gray-600 text-sm">Ideal para empezar</p>
+            </div>
+            <div class="text-center mb-6">
+              <span class="text-4xl font-bold text-blue-600">S/ 500</span>
+            </div>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>1 Página (Landing)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Diseño Responsive</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Formulario de contacto</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>WhatsApp flotante</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Hosting 1 año incluido</span>
+              </li>
+              <li class="flex items-center gap-2 text-gray-400">
+                <i class="text-gray-300">✗</i>
+                <span>Sin panel administrativo</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Profesional -->
+          <div class="border-2 border-blue-600 rounded-xl p-6 relative shadow-lg">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+              MÁS POPULAR
+            </div>
+            <div class="text-center mb-4">
+              <h3 class="text-xl font-bold text-gray-900">PROFESIONAL</h3>
+              <p class="text-gray-600 text-sm">El más recomendado</p>
+            </div>
+            <div class="text-center mb-6">
+              <span class="text-4xl font-bold text-blue-600">S/ 800</span>
+            </div>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Hasta 5 páginas</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Diseño Premium</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Optimización SEO básica</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Google Maps integrado</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Galería de imágenes</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Hosting + Dominio 1 año</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Soporte 30 días</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Premium -->
+          <div class="border-2 border-gray-200 rounded-xl p-6 hover:border-purple-500 transition">
+            <div class="text-center mb-4">
+              <h3 class="text-xl font-bold text-gray-900">PREMIUM</h3>
+              <p class="text-gray-600 text-sm">Solución completa</p>
+            </div>
+            <div class="text-center mb-6">
+              <span class="text-4xl font-bold text-purple-600">S/ 1,500</span>
+            </div>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Web ilimitada</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Panel administrativo</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Blog integrado</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Base de datos</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Login de usuarios</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>SEO avanzado</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="text-green-500">✓</i>
+                <span>Mantenimiento 3 meses</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adicionales -->
+      <div class="bg-blue-50 p-6 rounded-xl">
+        <h3 class="font-bold text-gray-900 mb-4">🎁 SERVICIOS ADICIONALES</h3>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div class="flex justify-between border-b border-blue-200 pb-2">
+            <span>Mantenimiento mensual</span>
+            <span class="font-semibold">S/ 50-100/mes</span>
+          </div>
+          <div class="flex justify-between border-b border-blue-200 pb-2">
+            <span>Posicionamiento SEO</span>
+            <span class="font-semibold">S/ 200-500</span>
+          </div>
+          <div class="flex justify-between border-b border-blue-200 pb-2">
+            <span>Campaña Google Ads</span>
+            <span class="font-semibold">S/ 300+</span>
+          </div>
+          <div class="flex justify-between border-b border-blue-200 pb-2">
+            <span>Redes sociales (diseño)</span>
+            <span class="font-semibold">S/ 150/mes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proceso -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">📅 PROCESO DE TRABAJO</h2>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Reunión inicial (30 min)</h4>
+              <p class="text-gray-600 text-sm">Definimos colores, logo, textos y estructura</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Desarrollo (2-3 días)</h4>
+              <p class="text-gray-600 text-sm">Creamos tu web con diseño profesional</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Revisión y ajustes</h4>
+              <p class="text-gray-600 text-sm">Hacemos los cambios que necesites</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">4</div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Entrega y capacitación</h4>
+              <p class="text-gray-600 text-sm">Te enseñamos a usar tu web + garantía</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formas de pago -->
+      <div class="bg-green-50 p-6 rounded-xl border-l-4 border-green-600">
+        <h3 class="font-bold text-gray-900 mb-4">💳 FORMAS DE PAGO</h3>
+        <div class="space-y-2 text-sm">
+          <p><strong>50% de adelanto</strong> para iniciar el proyecto</p>
+          <p><strong>50% contra entrega</strong> una vez aprobada la web</p>
+          <p class="text-gray-600 mt-4">Aceptamos: Yape, Plin, transferencia bancaria, efectivo</p>
+        </div>
+      </div>
+
+      <!-- Garantía -->
+      <div class="bg-purple-50 p-6 rounded-xl">
+        <h3 class="font-bold text-gray-900 mb-4">🛡️ GARANTÍA INCLUIDA</h3>
+        <ul class="space-y-2 text-sm">
+          <li>✓ 30 días de soporte técnico gratuito</li>
+          <li>✓ Corrección de bugs sin costo</li>
+          <li>✓ Cambios menores incluidos (hasta 2)</li>
+          <li>✓ Capacitación para que puedas editar textos básicos</li>
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div class="bg-gray-900 text-white p-6 rounded-xl">
+        <h3 class="font-bold text-xl mb-4">📞 ¿Listo para empezar?</h3>
+        <div class="space-y-2 text-sm">
+          <p><strong>Teléfono/WhatsApp:</strong> <span contenteditable="true">[Tu número]</span></p>
+          <p><strong>Email:</strong> <span contenteditable="true">[tu@email.com]</span></p>
+          <p><strong>Tiempo de respuesta:</strong> Menos de 24 horas</p>
+        </div>
+        <p class="mt-4 text-center text-blue-300 italic">"Tu éxito digital es mi prioridad"</p>
+      </div>
+
+      <!-- Firma -->
+      <div class="pt-8 border-t">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-8">Cliente</p>
+            <div class="border-t border-gray-400 pt-2">
+              <p class="font-semibold" contenteditable="true">[Nombre del Cliente]</p>
+              <p class="text-sm text-gray-600">DNI/RUC: _______________</p>
+            </div>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-8">Desarrollador</p>
+            <div class="border-t border-gray-400 pt-2">
+              <p class="font-semibold" contenteditable="true">[Tu Nombre]</p>
+              <p class="text-sm text-gray-600">Desarrollador Web</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center text-gray-500 text-sm pt-8 border-t">
+        <p>Propuesta válida por 15 días | Desarrollado con ❤️ en Perú</p>
+        <p class="mt-1" id="anio"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fecha automática
+    const today = new Date();
+    document.getElementById('fecha').textContent = today.toLocaleDateString('es-PE');
+    document.getElementById('anio').textContent = `© ${today.getFullYear()} - Todos los derechos reservados`;
+  </script>
+</body>
+</html>
