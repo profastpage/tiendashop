@@ -1,0 +1,616 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA JUMP | Retro Soul. Future Energy.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'nova-dark': '#090910',
+                        'nova-purple': '#2e1065',
+                        'nova-cyan': '#06b6d4',
+                        'nova-pink': '#db2777',
+                        'nova-yellow': '#fbbf24',
+                        'glass': 'rgba(255, 255, 255, 0.05)',
+                        'glass-border': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'pixel': ['"Press Start 2P"', 'cursive'],
+                        'body': ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-glow': 'pulse-glow 3s infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, filter: 'brightness(1)' },
+                            '50%': { opacity: 0.8, filter: 'brightness(1.2)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE & UTILS --- */
+        body {
+            background-color: #050508;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090910; }
+        ::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0891b2; }
+
+        /* --- CRT EFFECT --- */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        
+        .scanline {
+            width: 100%;
+            height: 10px;
+            z-index: 9998;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -10px; }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .text-pixel { font-family: 'Press Start 2P', cursive; line-height: 1.6; }
+        .text-glow { text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.5); }
+        .text-glow-pink { text-shadow: 0 0 10px rgba(219, 39, 119, 0.7), 0 0 20px rgba(219, 39, 119, 0.5); }
+        
+        /* --- COMPONENTS --- */
+        .btn-retro {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+        }
+        .btn-retro::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn-retro:hover::before { left: 100%; }
+        .btn-retro:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+            border-color: #06b6d4;
+        }
+
+        .card-glass {
+            background: rgba(15, 15, 25, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+        }
+        .card-glass:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(6, 182, 212, 0.15);
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .loader-bar-container {
+            width: 240px;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #333;
+        }
+        .loader-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #db2777);
+            width: 0%;
+            transition: width 0.2s;
+            box-shadow: 0 0 10px #06b6d4;
+        }
+
+        /* --- PARALLAX --- */
+        .parallax-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 120%;
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            will-change: transform;
+        }
+    </style>
+</head>
+<body class="font-body antialiased selection:bg-nova-cyan selection:text-black">
+
+    <!-- CRT Overlay Effects -->
+    <div class="crt-overlay"></div>
+    <div class="scanline"></div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="text-pixel text-nova-cyan text-lg md:text-2xl mb-6 animate-pulse tracking-widest">INITIALIZING SYSTEM...</div>
+        <div class="loader-bar-container">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+        <div class="text-gray-500 font-mono text-xs mt-2" id="loader-percent">0%</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-5 flex justify-between items-center backdrop-blur-sm bg-black/30 border-b border-white/5">
+        <div class="text-pixel text-sm md:text-lg text-white tracking-widest flex items-center gap-2">
+            <span class="w-3 h-3 bg-nova-cyan rounded-full animate-pulse"></span>
+            NOVA<span class="text-nova-cyan">JUMP</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-xs font-bold tracking-[0.2em] uppercase text-gray-300">
+            <a href="#features" class="hover:text-nova-cyan transition-colors">Features</a>
+            <a href="#world" class="hover:text-nova-cyan transition-colors">World</a>
+            <a href="#gallery" class="hover:text-nova-cyan transition-colors">Gallery</a>
+        </div>
+        <button class="btn-retro bg-nova-purple text-white px-6 py-2 text-xs font-bold uppercase tracking-widest rounded-sm">
+            Play Beta
+        </button>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden bg-nova-dark">
+        
+        <!-- Parallax Background Layer -->
+        <div class="parallax-bg" data-speed="0.2" style="background-image: url('https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/11aa8987d-fad4-4f2c-b58a-a3724331550b.png'); opacity: 0.4;"></div>
+        
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-nova-dark/50 via-transparent to-nova-dark z-0"></div>
+
+        <!-- Floating Particles (CSS) -->
+        <div class="absolute inset-0 z-10 overflow-hidden pointer-events-none">
+            <div class="absolute top-20 left-10 w-2 h-2 bg-nova-cyan rounded-full blur-[2px] animate-float"></div>
+            <div class="absolute top-40 right-20 w-3 h-3 bg-nova-pink rounded-full blur-[4px] animate-float-delayed"></div>
+            <div class="absolute bottom-40 left-1/4 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="container mx-auto px-4 relative z-20 grid lg:grid-cols-2 gap-12 items-center pt-24">
+            
+            <!-- Text -->
+            <div class="text-center lg:text-left reveal active">
+                <div class="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-nova-cyan/30 bg-nova-cyan/10 text-nova-cyan text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">
+                    <span class="w-2 h-2 rounded-full bg-nova-cyan animate-ping"></span>
+                    Season 1 Live
+                </div>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-pixel text-white mb-6 leading-tight">
+                    RETRO SOUL.<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-nova-cyan to-nova-pink text-glow">FUTURE ENERGY.</span>
+                </h1>
+                <p class="text-gray-400 text-base md:text-lg mb-8 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed border-l-2 border-nova-purple pl-4">
+                    Experimenta la evolución del plataforma. Gráficos de alta fidelidad, física precisa y un universo original que desafía la gravedad.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button class="btn-retro bg-nova-cyan text-black px-8 py-4 text-sm font-bold uppercase tracking-widest rounded-sm">
+                        Start Adventure
+                    </button>
+                    <button class="btn-retro bg-transparent text-white px-8 py-4 text-sm font-bold uppercase tracking-widest rounded-sm hover:bg-white/5">
+                        Watch Trailer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="relative h-[400px] md:h-[600px] flex items-center justify-center reveal delay-200">
+                <!-- Glow Effect -->
+                <div class="absolute w-80 h-80 bg-nova-purple rounded-full blur-[120px] opacity-40 animate-pulse-glow"></div>
+                
+                <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/1a79b567f-a2d2-4140-bad3-60cd65d2a846.png" 
+                     alt="Nova Jump Hero" 
+                     class="relative z-10 w-full max-w-lg drop-shadow-2xl animate-float mix-blend-screen mask-image-gradient">
+                
+                <!-- Decorative UI Element -->
+                <div class="absolute bottom-10 right-0 md:right-10 bg-black/80 backdrop-blur border border-nova-cyan/30 p-4 rounded-lg transform rotate-3 reveal delay-300">
+                    <div class="text-pixel text-nova-cyan text-[10px] mb-1">HIGH SCORE</div>
+                    <div class="text-2xl font-bold text-white font-mono">998,420</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-50 z-20">
+            <span class="text-[10px] font-pixel text-gray-500">SCROLL</span>
+            <div class="w-[1px] h-8 bg-gradient-to-b from-gray-500 to-transparent"></div>
+        </div>
+    </header>
+
+    <!-- STATS BAR -->
+    <section class="py-12 border-y border-white/5 bg-black/40 backdrop-blur-sm relative z-20">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="text-3xl md:text-4xl font-pixel text-nova-cyan mb-2">50+</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-widest">Unique Levels</div>
+                </div>
+                <div class="reveal delay-100">
+                    <div class="text-3xl md:text-4xl font-pixel text-nova-pink mb-2">12</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-widest">Boss Fights</div>
+                </div>
+                <div class="reveal delay-200">
+                    <div class="text-3xl md:text-4xl font-pixel text-nova-yellow mb-2">4K</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-widest">Resolution</div>
+                </div>
+                <div class="reveal delay-300">
+                    <div class="text-3xl md:text-4xl font-pixel text-white mb-2">60</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-widest">FPS Locked</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="py-24 relative overflow-hidden">
+        <!-- Background Grid -->
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-3xl md:text-5xl font-pixel text-white mb-4">SYSTEM <span class="text-nova-cyan">UPGRADES</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-nova-cyan to-nova-purple mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="card-glass p-8 rounded-2xl reveal delay-100 group cursor-pointer">
+                    <div class="w-16 h-16 mb-6 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center group-hover:border-nova-cyan transition-colors">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/1c1fc86ef-8911-4670-9445-f7fb4f19b8a9.png" class="w-10 h-10 object-contain opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]" style="object-position: 15% 50%;" alt="Speed Icon">
+                    </div>
+                    <h3 class="text-xl font-pixel text-nova-cyan mb-3 text-sm">Hyper Speed</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Motor de movimiento optimizado. Dash, wall-jump y aceleración instantánea para un flujo de juego perfecto.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-glass p-8 rounded-2xl reveal delay-200 group cursor-pointer">
+                    <div class="w-16 h-16 mb-6 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center group-hover:border-nova-pink transition-colors">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/1c1fc86ef-8911-4670-9445-f7fb4f19b8a9.png" class="w-10 h-10 object-contain opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(219,39,119,0.8)]" style="object-position: 50% 50%;" alt="Crystal Icon">
+                    </div>
+                    <h3 class="text-xl font-pixel text-nova-pink mb-3 text-sm">Crystal Power</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Recolecta cristales de energía para desbloquear habilidades pasivas y modificar la física del entorno.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-glass p-8 rounded-2xl reveal delay-300 group cursor-pointer">
+                    <div class="w-16 h-16 mb-6 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center group-hover:border-nova-yellow transition-colors">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/1c1fc86ef-8911-4670-9445-f7fb4f19b8a9.png" class="w-10 h-10 object-contain opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" style="object-position: 85% 50%;" alt="Shield Icon">
+                    </div>
+                    <h3 class="text-xl font-pixel text-nova-yellow mb-3 text-sm">Adaptive Defense</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Escudos dinámicos que reaccionan al tipo de daño. Estrategia en tiempo real contra enemigos IA.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORLD MAP SECTION -->
+    <section id="world" class="py-24 bg-gradient-to-b from-nova-dark to-[#130f26] relative">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <div class="lg:w-1/2 reveal">
+                    <h2 class="text-3xl md:text-5xl font-pixel text-white mb-6">EXPLORE THE <br><span class="text-nova-cyan">MULTIVERSE</span></h2>
+                    <p class="text-gray-300 mb-8 text-lg leading-relaxed">
+                        Viaja a través de 5 dimensiones únicas. Desde los Jardines Flotantes hasta la Ciudad de Neón. Cada nivel es una obra de arte jugable con su propia banda sonora dinámica.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-10 h-10 rounded-full bg-nova-purple/20 border border-nova-purple flex items-center justify-center text-nova-cyan font-pixel text-xs group-hover:bg-nova-purple group-hover:text-white transition-all">01</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Sky Garden</h4>
+                                <p class="text-gray-500 text-sm">Plataformas de gravedad cero y vientos solares.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-10 h-10 rounded-full bg-nova-purple/20 border border-nova-purple flex items-center justify-center text-nova-pink font-pixel text-xs group-hover:bg-nova-purple group-hover:text-white transition-all">02</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Neon District</h4>
+                                <p class="text-gray-500 text-sm">Ciberpunk urbano con enemigos robóticos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 group">
+                            <div class="w-10 h-10 rounded-full bg-nova-purple/20 border border-nova-purple flex items-center justify-center text-nova-yellow font-pixel text-xs group-hover:bg-nova-purple group-hover:text-white transition-all">03</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Magma Core</h4>
+                                <p class="text-gray-500 text-sm">Supervivencia extrema en zonas volcánicas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="mt-10 btn-retro bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest rounded-sm">
+                        View Full Map
+                    </button>
+                </div>
+
+                <div class="lg:w-1/2 relative reveal delay-200">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(46,16,101,0.4)] group">
+                        <div class="absolute inset-0 bg-nova-cyan/10 mix-blend-overlay z-10 pointer-events-none"></div>
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/1231bec9c-ae10-4cdf-8746-96cf2154b4d0.png" 
+                             alt="World Map" 
+                             class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        
+                        <!-- Interactive Dots -->
+                        <div class="absolute top-[25%] left-[20%] w-3 h-3 bg-white rounded-full animate-ping z-20"></div>
+                        <div class="absolute top-[40%] left-[55%] w-3 h-3 bg-white rounded-full animate-ping delay-700 z-20"></div>
+                        <div class="absolute top-[60%] left-[75%] w-3 h-3 bg-white rounded-full animate-ping delay-1000 z-20"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SHOWCASE SECTION -->
+    <section id="gallery" class="py-24 bg-nova-dark relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-pixel text-white">CHARACTER <span class="text-nova-pink">SELECT</span></h2>
+                <p class="text-gray-400 mt-4 font-mono text-sm">CHOOSE YOUR FIGHTER</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="group relative reveal delay-100">
+                    <div class="absolute inset-0 bg-nova-cyan rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div class="relative bg-black rounded-xl overflow-hidden border border-gray-800 aspect-[4/3]">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/12ea6003e-085b-4d37-a86f-1407e340b031.png" 
+                             class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" 
+                             style="object-position: 20% 50%;" alt="Character 1">
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <div class="text-pixel text-nova-cyan text-[10px]">CLASS: CYBER</div>
+                            <div class="text-white font-bold">Unit 734</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group relative reveal delay-200">
+                    <div class="absolute inset-0 bg-nova-pink rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div class="relative bg-black rounded-xl overflow-hidden border border-gray-800 aspect-[4/3]">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/12ea6003e-085b-4d37-a86f-1407e340b031.png" 
+                             class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" 
+                             style="object-position: 50% 50%;" alt="Character 2">
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <div class="text-pixel text-nova-pink text-[10px]">CLASS: ROGUE</div>
+                            <div class="text-white font-bold">Shadow V</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group relative reveal delay-300">
+                    <div class="absolute inset-0 bg-nova-purple rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div class="relative bg-black rounded-xl overflow-hidden border border-gray-800 aspect-[4/3]">
+                        <img src="https://image.qwenlm.ai/public_source/47e41d64-3c57-4cba-963c-c5cb5caaf8dd/12ea6003e-085b-4d37-a86f-1407e340b031.png" 
+                             class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" 
+                             style="object-position: 80% 50%;" alt="Character 3">
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <div class="text-pixel text-nova-purple text-[10px]">CLASS: MAGE</div>
+                            <div class="text-white font-bold">Aether</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS / ACHIEVEMENTS -->
+    <section class="py-20 bg-nova-purple/5 border-y border-white/5">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-pixel text-white text-xl mb-12">ACHIEVEMENTS UNLOCKED</h3>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 card-glass rounded-xl reveal">
+                    <div class="text-4xl mb-4">🏆</div>
+                    <h4 class="text-nova-cyan font-bold text-lg mb-2 font-pixel text-sm">BEST INDIE ART</h4>
+                    <p class="text-gray-500 text-xs">Pixel Festival 2024</p>
+                </div>
+                <div class="p-6 card-glass rounded-xl reveal delay-100">
+                    <div class="text-4xl mb-4">⭐</div>
+                    <h4 class="text-nova-pink font-bold text-lg mb-2 font-pixel text-sm">EDITOR'S CHOICE</h4>
+                    <p class="text-gray-500 text-xs">Retro Gaming Weekly</p>
+                </div>
+                <div class="p-6 card-glass rounded-xl reveal delay-200">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h4 class="text-nova-yellow font-bold text-lg mb-2 font-pixel text-sm">TOP 10 TRENDING</h4>
+                    <p class="text-gray-500 text-xs">Steam Global</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="py-32 relative overflow-hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-nova-purple/20 to-black z-0"></div>
+        <!-- Animated Grid Floor -->
+        <div class="absolute bottom-0 w-full h-1/2 bg-[linear-gradient(transparent_0%,rgba(6,182,212,0.1)_100%)] transform perspective-1000 rotate-x-12 z-0"></div>
+
+        <div class="relative z-10 text-center px-4 reveal max-w-4xl">
+            <h2 class="text-4xl md:text-7xl font-pixel text-white mb-8 text-glow">
+                READY TO <br> <span class="text-nova-cyan">JUMP?</span>
+            </h2>
+            <p class="text-gray-300 text-lg mb-10 max-w-2xl mx-auto font-light">
+                Únete a la beta cerrada hoy. Solo 1000 cupos disponibles para los primeros exploradores del multiverso.
+            </p>
+            <button class="btn-retro bg-nova-cyan text-black px-12 py-5 text-lg font-bold uppercase tracking-widest rounded-sm hover:scale-105 transition-transform">
+                Reserve Your Spot
+            </button>
+            <p class="mt-6 text-xs text-gray-600 font-mono">NO CREDIT CARD REQUIRED • INSTANT ACCESS</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-12 border-t border-gray-900 relative z-20">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-pixel text-white text-sm md:text-lg flex items-center gap-2">
+                <span class="w-2 h-2 bg-nova-cyan rounded-full"></span>
+                NOVA<span class="text-nova-cyan">JUMP</span>
+            </div>
+            
+            <div class="flex gap-6 text-xs text-gray-500 font-mono uppercase tracking-wider">
+                <a href="#" class="hover:text-nova-cyan transition-colors">Privacy</a>
+                <a href="#" class="hover:text-nova-cyan transition-colors">Terms</a>
+                <a href="#" class="hover:text-nova-cyan transition-colors">Press Kit</a>
+            </div>
+
+            <div class="text-gray-600 text-[10px] md:text-xs font-mono text-center md:text-right">
+                <p>© 2024 Nova Jump Studio. All rights reserved.</p>
+                <p class="mt-1 text-nova-cyan/50 hover:text-nova-cyan transition-colors cursor-pointer">
+                    Creado y desarrollado por <a href="https://wa.me/51919662011" target="_blank" class="underline decoration-nova-cyan/30 hover:decoration-nova-cyan">FastPagePro</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- PRELOADER LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const loaderBar = document.getElementById('loader-bar');
+            const loaderPercent = document.getElementById('loader-percent');
+            const preloader = document.getElementById('preloader');
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 800);
+                } else {
+                    width += Math.random() * 15;
+                    if(width > 100) width = 100;
+                    loaderBar.style.width = width + '%';
+                    loaderPercent.innerText = Math.floor(width) + '%';
+                }
+            }, 200);
+        });
+
+        // --- SCROLL REVEAL ANIMATION ---
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+
+        // --- PARALLAX EFFECT ---
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const parallaxLayers = document.querySelectorAll('.parallax-bg');
+            
+            parallaxLayers.forEach(layer => {
+                const speed = layer.getAttribute('data-speed');
+                layer.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // --- MOUSE MOVE GLOW EFFECT (Desktop Only) ---
+        if (window.matchMedia("(min-width: 1024px)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                const cards = document.querySelectorAll('.card-glass');
+                const x = e.clientX;
+                const y = e.clientY;
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const cardX = rect.left + rect.width / 2;
+                    const cardY = rect.top + rect.height / 2;
+                    
+                    const distX = (x - cardX) / 20;
+                    const distY = (y - cardY) / 20;
+
+                    // Subtle tilt effect
+                    // card.style.transform = `perspective(1000px) rotateX(${distY * -0.5}deg) rotateY(${distX * 0.5}deg)`;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+```
