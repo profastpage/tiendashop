@@ -1,0 +1,1301 @@
+```html
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VELOCITY KICKS | Redefine Tu Paso</title>
+    <meta name="description" content="Zapatillas urbanas premium. Diseño exclusivo, comodidad superior. Ediciones limitadas.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-black': '#0a0a0a',
+                        'brand-dark': '#1a1a1a',
+                        'brand-gray': '#2a2a2a',
+                        'brand-accent': '#ff4500',
+                        'brand-accent-hover': '#ff6326',
+                        'brand-light': '#f5f5f5',
+                        'brand-white': '#ffffff',
+                    },
+                    fontFamily: {
+                        'display': ['Oswald', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 20px rgba(255, 69, 0, 0.4)' },
+                            '50%': { opacity: 0.7, boxShadow: '0 0 40px rgba(255, 69, 0, 0.8)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff4500;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 69, 0, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff4500;
+            border-radius: 3px;
+        }
+
+        /* Smooth Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Card Hover Effects */
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.08);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.4);
+        }
+
+        /* Navigation */
+        .nav-scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Product Badge */
+        .badge-new {
+            background: linear-gradient(135deg, #ff4500, #ff8c00);
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* Cart Badge */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4500;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Loading Screen */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .loader-sneaker {
+            width: 120px;
+            height: 60px;
+            border: 3px solid #1a1a1a;
+            border-top: 3px solid #ff4500;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Filter Buttons */
+        .filter-btn.active {
+            background: #ff4500;
+            color: white;
+            border-color: #ff4500;
+        }
+
+        /* Size Selector */
+        .size-btn {
+            transition: all 0.2s ease;
+        }
+        .size-btn:hover, .size-btn.selected {
+            background: #ff4500;
+            border-color: #ff4500;
+            color: white;
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Image Hover Zoom */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-zoom-container:hover .img-zoom {
+            transform: scale(1.1);
+        }
+
+        /* Sticky Add to Cart (Mobile) */
+        .sticky-cart {
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .sticky-cart.visible {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-body">
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot hidden md:block" id="cursor-dot"></div>
+    <div class="cursor-outline hidden md:block" id="cursor-outline"></div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="text-display text-3xl font-bold text-white mb-8 tracking-widest">
+            VELOCITY<span class="text-brand-accent">KICKS</span>
+        </div>
+        <div class="loader-sneaker"></div>
+        <div class="text-gray-500 text-sm mt-4 font-mono">CARGANDO EXPERIENCIA...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 py-4" id="navbar">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="#" class="text-display text-2xl font-bold text-white tracking-widest hover:text-brand-accent transition-colors">
+                    VELOCITY<span class="text-brand-accent">KICKS</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#home" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">INICIO</a>
+                    <a href="#catalogo" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">CATÁLOGO</a>
+                    <a href="#nosotros" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">NOSOTROS</a>
+                    <a href="#tecnologia" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">TECNOLOGÍA</a>
+                    <a href="#contacto" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">CONTACTO</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-4">
+                    <button class="text-white hover:text-brand-accent transition-colors relative">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </button>
+                    <button class="lg:hidden text-white text-2xl" onclick="toggleMobileMenu()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed top-0 right-0 w-80 h-full bg-brand-dark z-50 shadow-2xl" id="mobile-menu">
+        <div class="p-6">
+            <button onclick="toggleMobileMenu()" class="text-white text-2xl mb-8">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex flex-col gap-6">
+                <a href="#home" onclick="toggleMobileMenu()" class="text-lg font-medium text-gray-300 hover:text-brand-accent transition-colors">INICIO</a>
+                <a href="#catalogo" onclick="toggleMobileMenu()" class="text-lg font-medium text-gray-300 hover:text-brand-accent transition-colors">CATÁLOGO</a>
+                <a href="#nosotros" onclick="toggleMobileMenu()" class="text-lg font-medium text-gray-300 hover:text-brand-accent transition-colors">NOSOTROS</a>
+                <a href="#tecnologia" onclick="toggleMobileMenu()" class="text-lg font-medium text-gray-300 hover:text-brand-accent transition-colors">TECNOLOGÍA</a>
+                <a href="#contacto" onclick="toggleMobileMenu()" class="text-lg font-medium text-gray-300 hover:text-brand-accent transition-colors">CONTACTO</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1556906781-9a412961c28c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-black/80 via-brand-black/50 to-brand-black"></div>
+        
+        <!-- Animated Particles -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-brand-accent rounded-full animate-float"></div>
+            <div class="absolute top-3/4 right-1/4 w-3 h-3 bg-brand-accent rounded-full animate-float" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full animate-float" style="animation-delay: 2s;"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="reveal active">
+                <span class="inline-block px-4 py-2 mb-6 border border-brand-accent/50 rounded-full text-brand-accent text-xs font-bold tracking-widest uppercase bg-brand-accent/10">
+                    <i class="fa-solid fa-bolt mr-2"></i> NUEVA COLECCIÓN 2024
+                </span>
+                <h1 class="text-display text-5xl md:text-7xl lg:text-9xl font-bold text-white mb-6 leading-tight">
+                    REDEFINE<br>
+                    <span class="text-gradient">TU PASO</span>
+                </h1>
+                <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
+                    Zapatillas urbanas premium diseñadas para quienes nunca se detienen. 
+                    Donde la comodidad encuentra el estilo.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#catalogo" class="btn-primary bg-brand-accent text-white px-10 py-4 rounded-full font-bold text-sm tracking-widest uppercase">
+                        VER COLECCIÓN
+                    </a>
+                    <a href="#nosotros" class="btn-primary border border-white/30 text-white px-10 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-white/10">
+                        CONOCER MÁS
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+                <i class="fa-solid fa-chevron-down text-white/50 text-2xl"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Trust Bar -->
+    <section class="py-8 bg-brand-dark border-y border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="flex items-center justify-center gap-3 reveal">
+                    <i class="fa-solid fa-truck text-brand-accent text-2xl"></i>
+                    <div>
+                        <p class="text-white font-bold text-sm">ENVÍO GRATIS</p>
+                        <p class="text-gray-500 text-xs">Pedidos +$150</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-3 reveal delay-100">
+                    <i class="fa-solid fa-shield-halved text-brand-accent text-2xl"></i>
+                    <div>
+                        <p class="text-white font-bold text-sm">GARANTÍA AUTÉNTICO</p>
+                        <p class="text-gray-500 text-xs">100% Original</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-3 reveal delay-200">
+                    <i class="fa-solid fa-rotate-left text-brand-accent text-2xl"></i>
+                    <div>
+                        <p class="text-white font-bold text-sm">DEVOLUCIONES</p>
+                        <p class="text-gray-500 text-xs">30 días gratis</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-3 reveal delay-300">
+                    <i class="fa-solid fa-lock text-brand-accent text-2xl"></i>
+                    <div>
+                        <p class="text-white font-bold text-sm">PAGO SEGURO</p>
+                        <p class="text-gray-500 text-xs">Encriptado SSL</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Product -->
+    <section class="py-24 bg-brand-black relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-accent/5 to-transparent"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Product Image -->
+                <div class="reveal">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-brand-accent/20 blur-3xl rounded-full"></div>
+                        <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Featured Sneaker" 
+                             class="relative z-10 w-full animate-float drop-shadow-2xl">
+                        <div class="absolute top-4 left-4 badge-new text-white px-4 py-2 rounded-full text-xs font-bold tracking-widest">
+                            EDICIÓN LIMITADA
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="reveal delay-200">
+                    <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">FLAGSHIP MODEL</span>
+                    <h2 class="text-display text-4xl md:text-6xl font-bold text-white mb-4">PHANTOM X1</h2>
+                    <p class="text-gray-400 text-lg mb-6 leading-relaxed">
+                        Nuestra zapatilla más avanzada. Tecnología de amortiguación reactiva, 
+                        tejido transpirable premium y diseño aerodinámico para máximo rendimiento.
+                    </p>
+                    <div class="flex items-center gap-4 mb-8">
+                        <span class="text-4xl font-bold text-white">$189.99</span>
+                        <span class="text-xl text-gray-500 line-through">$249.99</span>
+                        <span class="bg-brand-accent text-white px-3 py-1 rounded text-xs font-bold">-24%</span>
+                    </div>
+
+                    <!-- Size Selector -->
+                    <div class="mb-8">
+                        <p class="text-white font-bold text-sm mb-3">SELECCIONA TU TALLA</p>
+                        <div class="flex flex-wrap gap-2" id="size-selector">
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">38</button>
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">39</button>
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">40</button>
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">41</button>
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">42</button>
+                            <button class="size-btn w-12 h-12 border border-gray-700 rounded-lg text-gray-400 hover:border-brand-accent transition-colors font-bold text-sm">43</button>
+                        </div>
+                    </div>
+
+                    <!-- Color Selector -->
+                    <div class="mb-8">
+                        <p class="text-white font-bold text-sm mb-3">COLOR</p>
+                        <div class="flex gap-3">
+                            <button class="w-10 h-10 rounded-full bg-brand-accent border-2 border-white"></button>
+                            <button class="w-10 h-10 rounded-full bg-black border-2 border-gray-700 hover:border-white"></button>
+                            <button class="w-10 h-10 rounded-full bg-white border-2 border-gray-700 hover:border-white"></button>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex gap-4">
+                        <button class="btn-primary bg-brand-accent text-white px-8 py-4 rounded-full font-bold text-sm tracking-widest uppercase flex-1" onclick="addToCart()">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> AÑADIR AL CARRITO
+                        </button>
+                        <button class="btn-primary border border-gray-700 text-white px-6 py-4 rounded-full hover:border-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Stock Info -->
+                    <div class="mt-6 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-circle text-green-500 text-xs"></i>
+                        <span class="text-gray-400">En stock - Envío en 24h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalogo" class="py-24 bg-brand-dark">
+        <div class="container mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">COLECCIÓN COMPLETA</span>
+                <h2 class="text-display text-4xl md:text-6xl font-bold text-white mb-4">NUESTRAS ZAPATILLAS</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Cada par está diseñado con precisión y pasión. Explora nuestra gama completa 
+                    y encuentra el estilo perfecto para ti.
+                </p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12 reveal">
+                <button class="filter-btn active px-6 py-3 border border-gray-700 rounded-full text-sm font-bold uppercase tracking-wider transition-all" data-filter="all">
+                    TODAS
+                </button>
+                <button class="filter-btn px-6 py-3 border border-gray-700 rounded-full text-sm font-bold uppercase tracking-wider transition-all hover:border-brand-accent" data-filter="running">
+                    RUNNING
+                </button>
+                <button class="filter-btn px-6 py-3 border border-gray-700 rounded-full text-sm font-bold uppercase tracking-wider transition-all hover:border-brand-accent" data-filter="lifestyle">
+                    LIFESTYLE
+                </button>
+                <button class="filter-btn px-6 py-3 border border-gray-700 rounded-full text-sm font-bold uppercase tracking-wider transition-all hover:border-brand-accent" data-filter="basketball">
+                    BASKETBALL
+                </button>
+                <button class="filter-btn px-6 py-3 border border-gray-700 rounded-full text-sm font-bold uppercase tracking-wider transition-all hover:border-brand-accent" data-filter="limited">
+                    EDICIÓN LIMITADA
+                </button>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal" data-category="running">
+                    <div class="img-zoom-container relative">
+                        <span class="absolute top-4 left-4 bg-brand-accent text-white px-3 py-1 rounded-full text-xs font-bold z-10">NUEVO</span>
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Velocity Runner Pro" 
+                             class="img-zoom w-full h-64 object-cover">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">RUNNING</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">VELOCITY RUNNER PRO</h3>
+                        <p class="text-gray-400 text-sm mb-4">Amortiguación máxima para largas distancias</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$159.99</span>
+                            <button class="bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-brand-accent-hover transition-colors" onclick="addToCart()">
+                                <i class="fa-solid fa-cart-plus mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal delay-100" data-category="lifestyle">
+                    <div class="img-zoom-container relative">
+                        <img src="https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Urban Street X" 
+                             class="img-zoom w-full h-64 object-cover">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">LIFESTYLE</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">URBAN STREET X</h3>
+                        <p class="text-gray-400 text-sm mb-4">Estilo urbano para el día a día</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$129.99</span>
+                            <button class="bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-brand-accent-hover transition-colors" onclick="addToCart()">
+                                <i class="fa-solid fa-cart-plus mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal delay-200" data-category="basketball">
+                    <div class="img-zoom-container relative">
+                        <span class="absolute top-4 left-4 badge-new text-white px-3 py-1 rounded-full text-xs font-bold z-10">LIMITED</span>
+                        <img src="https://images.unsplash.com/photo-1579338559194-a162d19bf842?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Court Dominator" 
+                             class="img-zoom w-full h-64 object-cover">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">BASKETBALL</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">COURT DOMINATOR</h3>
+                        <p class="text-gray-400 text-sm mb-4">Tracción y soporte para la cancha</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$179.99</span>
+                            <button class="bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-brand-accent-hover transition-colors" onclick="addToCart()">
+                                <i class="fa-solid fa-cart-plus mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal" data-category="running">
+                    <div class="img-zoom-container relative">
+                        <img src="https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Speed Force Elite" 
+                             class="img-zoom w-full h-64 object-cover">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">RUNNING</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">SPEED FORCE ELITE</h3>
+                        <p class="text-gray-400 text-sm mb-4">Ligereza extrema para récords personales</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$169.99</span>
+                            <button class="bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-brand-accent-hover transition-colors" onclick="addToCart()">
+                                <i class="fa-solid fa-cart-plus mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal delay-100" data-category="lifestyle">
+                    <div class="img-zoom-container relative">
+                        <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Classic Low Top" 
+                             class="img-zoom w-full h-64 object-cover">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">LIFESTYLE</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">CLASSIC LOW TOP</h3>
+                        <p class="text-gray-400 text-sm mb-4">Diseño atemporal, comodidad moderna</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$119.99</span>
+                            <button class="bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-brand-accent-hover transition-colors" onclick="addToCart()">
+                                <i class="fa-solid fa-cart-plus mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-card bg-brand-gray rounded-2xl overflow-hidden reveal delay-200" data-category="limited">
+                    <div class="img-zoom-container relative">
+                        <span class="absolute top-4 left-4 badge-new text-white px-3 py-1 rounded-full text-xs font-bold z-10">SOLD OUT</span>
+                        <img src="https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Phantom X1 Limited" 
+                             class="img-zoom w-full h-64 object-cover opacity-75">
+                        <button class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-regular fa-heart text-white"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-brand-accent text-xs font-bold tracking-widest uppercase">EDICIÓN LIMITADA</span>
+                        <h3 class="text-display text-xl font-bold text-white mt-2 mb-2">PHANTOM X1 LIMITED</h3>
+                        <p class="text-gray-400 text-sm mb-4">Solo 500 pares en todo el mundo</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">$299.99</span>
+                            <button class="bg-gray-700 text-gray-400 px-4 py-2 rounded-full text-sm font-bold cursor-not-allowed">
+                                AGOTADO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-16 reveal">
+                <button class="btn-primary border border-brand-accent text-brand-accent px-10 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-brand-accent hover:text-white transition-all">
+                    VER TODOS LOS PRODUCTOS
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="nosotros" class="py-24 bg-brand-black relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Image Grid -->
+                <div class="reveal">
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="About Us 1" 
+                             class="rounded-2xl w-full h-64 object-cover img-zoom-container">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="About Us 2" 
+                             class="rounded-2xl w-full h-64 object-cover img-zoom-container mt-8">
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="reveal delay-200">
+                    <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">SOBRE NOSOTROS</span>
+                    <h2 class="text-display text-4xl md:text-5xl font-bold text-white mb-6">
+                        MÁS QUE ZAPATILLAS,<br>
+                        <span class="text-gradient">UN MOVIMIENTO</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-6 leading-relaxed">
+                        Velocity Kicks nació en 2018 con una misión simple: crear zapatillas que 
+                        combinen diseño vanguardista, comodidad excepcional y calidad premium, 
+                        sin compromisos.
+                    </p>
+                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                        Cada par es el resultado de meses de investigación, pruebas con atletas 
+                        profesionales y pasión por la innovación. No seguimos tendencias, las creamos.
+                    </p>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div>
+                            <p class="text-display text-3xl font-bold text-brand-accent">50K+</p>
+                            <p class="text-gray-500 text-sm">CLIENTES FELICES</p>
+                        </div>
+                        <div>
+                            <p class="text-display text-3xl font-bold text-brand-accent">25+</p>
+                            <p class="text-gray-500 text-sm">DISEÑOS EXCLUSIVOS</p>
+                        </div>
+                        <div>
+                            <p class="text-display text-3xl font-bold text-brand-accent">6</p>
+                            <p class="text-gray-500 text-sm">AÑOS DE EXPERIENCIA</p>
+                        </div>
+                    </div>
+
+                    <!-- Values -->
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-accent/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-medal text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">CALIDAD PREMIUM</h4>
+                                <p class="text-gray-500 text-sm">Materiales seleccionados cuidadosamente para durabilidad y confort</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-accent/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-leaf text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">SOSTENIBILIDAD</h4>
+                                <p class="text-gray-500 text-sm">Comprometidos con materiales eco-friendly y producción responsable</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-accent/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-users text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">COMUNIDAD</h4>
+                                <p class="text-gray-500 text-sm">Más que una marca, somos una comunidad de apasionados del streetwear</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="tecnologia" class="py-24 bg-brand-dark">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">INNOVACIÓN</span>
+                <h2 class="text-display text-4xl md:text-6xl font-bold text-white mb-4">TECNOLOGÍA VELOCITY</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Cada detalle está diseñado para mejorar tu experiencia. 
+                    Conoce la tecnología que nos hace diferentes.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tech 1 -->
+                <div class="text-center p-8 bg-brand-gray rounded-2xl reveal">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-brand-accent/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-feather text-brand-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-display text-xl font-bold text-white mb-3">ULTRA LIGERO</h3>
+                    <p class="text-gray-400 text-sm">Materiales de peso pluma que no comprometen la durabilidad</p>
+                </div>
+
+                <!-- Tech 2 -->
+                <div class="text-center p-8 bg-brand-gray rounded-2xl reveal delay-100">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-brand-accent/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-wind text-brand-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-display text-xl font-bold text-white mb-3">TRANSPIRABLE</h3>
+                    <p class="text-gray-400 text-sm">Tejido técnico que mantiene tus pies frescos todo el día</p>
+                </div>
+
+                <!-- Tech 3 -->
+                <div class="text-center p-8 bg-brand-gray rounded-2xl reveal delay-200">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-brand-accent/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-brand-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-display text-xl font-bold text-white mb-3">AMORTIGUACIÓN REACTIVA</h3>
+                    <p class="text-gray-400 text-sm">Tecnología que devuelve energía en cada paso</p>
+                </div>
+
+                <!-- Tech 4 -->
+                <div class="text-center p-8 bg-brand-gray rounded-2xl reveal delay-300">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-brand-accent/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-brand-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-display text-xl font-bold text-white mb-3">SUELA ANTIDESLIZANTE</h3>
+                    <p class="text-gray-400 text-sm">Agarre superior en cualquier superficie y condición</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-24 bg-brand-black">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">TESTIMONIOS</span>
+                <h2 class="text-display text-4xl md:text-6xl font-bold text-white mb-4">LO QUE DICEN NUESTROS CLIENTES</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-brand-gray p-8 rounded-2xl reveal">
+                    <div class="flex text-brand-accent mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        "Las mejores zapatillas que he comprado. La comodidad es increíble y el diseño 
+                        llama la atención donde quiera que voy. 100% recomendadas."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Cliente" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <p class="text-white font-bold">Carlos M.</p>
+                            <p class="text-gray-500 text-sm">Runner Profesional</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-brand-gray p-8 rounded-2xl reveal delay-100">
+                    <div class="flex text-brand-accent mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        "La calidad es impresionante por el precio. He comprado 3 pares y todos son 
+                        perfectos. El envío fue rápido y la atención al cliente excelente."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Cliente" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <p class="text-white font-bold">Ana G.</p>
+                            <p class="text-gray-500 text-sm">Diseñadora</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-brand-gray p-8 rounded-2xl reveal delay-200">
+                    <div class="flex text-brand-accent mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        "Compré la edición limitada y superó mis expectativas. Los materiales son 
+                        premium y el diseño es único. Definitivamente volveré a comprar."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="Cliente" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <p class="text-white font-bold">Miguel R.</p>
+                            <p class="text-gray-500 text-sm">Sneakerhead</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-24 bg-gradient-to-r from-brand-accent to-brand-accent-hover relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+        
+        <div class="container mx-auto px-6 relative z-10 text-center reveal">
+            <h2 class="text-display text-4xl md:text-5xl font-bold text-white mb-4">ÚNETE AL INNER CIRCLE</h2>
+            <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
+                Recibe acceso anticipado a nuevos lanzamientos, descuentos exclusivos 
+                y contenido detrás de cámaras.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte!');">
+                <input type="email" placeholder="TU EMAIL" 
+                       class="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white">
+                <button type="submit" class="btn-primary bg-brand-black text-white px-8 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-black transition-colors">
+                    SUSCRIBIRME
+                </button>
+            </form>
+            <p class="text-white/50 text-xs mt-4">🔒 Tus datos están seguros. Sin spam, solo contenido exclusivo.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="py-24 bg-brand-dark">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Contact Info -->
+                <div class="reveal">
+                    <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">CONTACTO</span>
+                    <h2 class="text-display text-4xl md:text-5xl font-bold text-white mb-6">HABLEMOS</h2>
+                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                        ¿Tienes preguntas? Estamos aquí para ayudarte. 
+                        Contáctanos y te responderemos lo antes posible.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-brand-accent/20 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-bold">DIRECCIÓN</p>
+                                <p class="text-gray-500 text-sm">Av. Principal 123, Ciudad, País</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-brand-accent/20 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-phone text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-bold">TELÉFONO</p>
+                                <p class="text-gray-500 text-sm">+51 919 662 011</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-brand-accent/20 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-envelope text-brand-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-bold">EMAIL</p>
+                                <p class="text-gray-500 text-sm">contacto@velocitykicks.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="mt-8">
+                        <p class="text-white font-bold mb-4">SÍGUENOS</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="w-12 h-12 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                                <i class="fa-brands fa-instagram text-white text-xl"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                                <i class="fa-brands fa-facebook-f text-white text-xl"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                                <i class="fa-brands fa-tiktok text-white text-xl"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                                <i class="fa-brands fa-youtube text-white text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="reveal delay-200">
+                    <form class="bg-brand-gray p-8 rounded-2xl">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-white font-bold text-sm mb-2">NOMBRE</label>
+                                <input type="text" class="w-full px-4 py-3 bg-brand-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand-accent transition-colors" placeholder="Tu nombre">
+                            </div>
+                            <div>
+                                <label class="block text-white font-bold text-sm mb-2">APELLIDO</label>
+                                <input type="text" class="w-full px-4 py-3 bg-brand-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand-accent transition-colors" placeholder="Tu apellido">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-white font-bold text-sm mb-2">EMAIL</label>
+                            <input type="email" class="w-full px-4 py-3 bg-brand-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand-accent transition-colors" placeholder="tu@email.com">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-white font-bold text-sm mb-2">MENSAJE</label>
+                            <textarea rows="4" class="w-full px-4 py-3 bg-brand-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand-accent transition-colors" placeholder="¿En qué podemos ayudarte?"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary w-full bg-brand-accent text-white px-8 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-brand-accent-hover transition-colors">
+                            ENVIAR MENSAJE
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-black border-t border-gray-800 pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div>
+                    <a href="#" class="text-display text-2xl font-bold text-white tracking-widest block mb-4">
+                        VELOCITY<span class="text-brand-accent">KICKS</span>
+                    </a>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
+                        Zapatillas urbanas premium para quienes nunca se detienen. 
+                        Diseño exclusivo, calidad superior.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-brands fa-facebook-f text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-brand-gray rounded-full flex items-center justify-center hover:bg-brand-accent transition-colors">
+                            <i class="fa-brands fa-tiktok text-white"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">ENLACES RÁPIDOS</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#home" class="hover:text-brand-accent transition-colors">Inicio</a></li>
+                        <li><a href="#catalogo" class="hover:text-brand-accent transition-colors">Catálogo</a></li>
+                        <li><a href="#nosotros" class="hover:text-brand-accent transition-colors">Nosotros</a></li>
+                        <li><a href="#tecnologia" class="hover:text-brand-accent transition-colors">Tecnología</a></li>
+                        <li><a href="#contacto" class="hover:text-brand-accent transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">ATENCIÓN AL CLIENTE</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Envíos</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Devoluciones</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Guía de Tallas</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Payment Methods -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">MÉTODOS DE PAGO</h4>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <div class="w-12 h-8 bg-white rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-visa text-blue-900 text-xl"></i>
+                        </div>
+                        <div class="w-12 h-8 bg-white rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-mastercard text-red-600 text-xl"></i>
+                        </div>
+                        <div class="w-12 h-8 bg-white rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-paypal text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="w-12 h-8 bg-white rounded flex items-center justify-center">
+                            <i class="fa-brands fa-apple-pay text-black text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm">🔒 Pago 100% seguro y encriptado</p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-600 text-sm">&copy; 2024 Velocity Kicks. Todos los derechos reservados.</p>
+                <div class="flex gap-6 text-sm text-gray-600">
+                    <a href="#" class="hover:text-white transition-colors">Privacidad</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookies</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+                <p class="text-brand-accent/50 hover:text-brand-accent transition-colors text-sm cursor-pointer">
+                    Creado y desarrollado por <a href="https://wa.me/51919662011" target="_blank" class="underline decoration-brand-accent/30 hover:decoration-brand-accent">FastPagePro</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/51919662011" target="_blank" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-all transform hover:scale-110 animate-pulse-glow">
+        <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
+    </a>
+
+    <!-- Cart Modal -->
+    <div class="modal fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" id="cart-modal">
+        <div class="modal-content bg-brand-dark rounded-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            <h3 class="text-display text-2xl font-bold text-white mb-6">TU CARRITO</h3>
+            <div id="cart-items" class="space-y-4 mb-6">
+                <p class="text-gray-500 text-center py-8">Tu carrito está vacío</p>
+            </div>
+            <div class="border-t border-gray-700 pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-400">Total:</span>
+                    <span class="text-2xl font-bold text-white" id="cart-total">$0.00</span>
+                </div>
+                <button class="btn-primary w-full bg-brand-accent text-white px-8 py-4 rounded-full font-bold text-sm tracking-widest uppercase">
+                    PROCEDER AL PAGO
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Custom Cursor
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            cursorOutline.style.left = e.clientX + 'px';
+            cursorOutline.style.top = e.clientY + 'px';
+        });
+
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                }, 800);
+            }, 2000);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('nav-scrolled');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('active');
+        }
+
+        // Size Selector
+        const sizeBtns = document.querySelectorAll('.size-btn');
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+
+        // Cart Functionality
+        let cartCount = 0;
+        let cartTotal = 0;
+
+        function addToCart() {
+            cartCount++;
+            cartTotal += 159.99;
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = '$' + cartTotal.toFixed(2);
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-24 right-6 bg-brand-accent text-white px-6 py-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform';
+            notification.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Producto añadido al carrito';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        function closeCartModal() {
+            document.getElementById('cart-modal').classList.remove('active');
+        }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const products = document.querySelectorAll('.product-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.getAttribute('data-filter');
+                
+                products.forEach(product => {
+                    if (filter === 'all' || product.getAttribute('data-category') === filter) {
+                        product.style.display = 'block';
+                        setTimeout(() => {
+                            product.style.opacity = '1';
+                            product.style.transform = 'translateY(0)';
+                        }, 100);
+                    } else {
+                        product.style.opacity = '0';
+                        product.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            product.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray('.reveal').forEach(element => {
+            gsap.fromTo(element, 
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+        });
+
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
